@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>전국 화장실 지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--blue:#3182F6;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;--line:#E8ECEF;--bg:#F9FAFB;
+--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);background:#fff;
+height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:center;justify-content:center;padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0}
+header h1{font-size:16px;font-weight:600}
+#chips{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+#chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;font-size:13px;padding:7px 13px;border-radius:17px;background:#F2F4F6;color:var(--sub);border:none;cursor:pointer}
+.chip.on{background:var(--blue);color:#fff}
+#map{flex:1;min-height:120px}
+#panel{flex-shrink:0;max-height:46dvh;overflow-y:auto;border-top:1px solid var(--line);padding:10px 14px calc(10px + var(--safe-b))}
+#panel h2{font-size:12px;color:var(--mut);font-weight:400;margin-bottom:8px}
+.card{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+.card .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card .nm{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .dist{font-size:14px;font-weight:600;color:var(--blue);flex-shrink:0}
+.tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 7px;border-radius:4px;background:#F2F4F6;color:var(--sub)}
+.tag.g{background:#E7F4EC;color:#1B7E45}.tag.b{background:#EAF2FE;color:#1B64DA}
+#status{font-size:13px;color:var(--mut);text-align:center;padding:18px 10px}
+#status button{margin-top:10px;font-size:14px;padding:10px 18px;border:none;border-radius:10px;background:var(--blue);color:#fff}
+#sheet{position:fixed;left:0;right:0;bottom:-100%;background:#fff;border-radius:20px 20px 0 0;
+box-shadow:0 -4px 24px rgba(0,0,0,.15);transition:bottom .25s;z-index:1200;padding:18px 16px calc(16px + var(--safe-b));max-height:80dvh;overflow-y:auto}
+#sheet.open{bottom:0}
+#sheet .nm{font-size:17px;font-weight:600;padding-right:30px}
+#sheet .ad{font-size:12px;color:var(--mut);margin-top:4px}
+#sx{position:absolute;top:14px;right:14px;font-size:22px;color:var(--mut);background:none;border:none;cursor:pointer;line-height:1}
+#sheet table{width:100%;font-size:13px;margin:12px 0;border-collapse:collapse}
+#sheet td{padding:5px 0}#sheet td:first-child{color:var(--mut);width:104px}
+.btns{display:flex;gap:8px}
+.btns a{flex:1;text-align:center;padding:13px 0;border-radius:11px;font-size:14px;font-weight:600;text-decoration:none}
+.go{background:var(--blue);color:#fff}.go2{background:#F2F4F6;color:var(--sub)}
+#adslot{flex-shrink:0;height:50px;border-top:1px dashed #C4CCD4;display:flex;align-items:center;justify-content:center;
+font-size:11px;color:var(--mut);padding-bottom:var(--safe-b)}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s;z-index:1100}
+#overlay.on{opacity:1;pointer-events:auto}
+.leaflet-control-attribution{font-size:9px}
+#locbtn{position:absolute;right:10px;bottom:10px;z-index:1000;width:40px;height:40px;border-radius:50%;background:#fff;
+border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:18px;color:var(--blue);cursor:pointer}
+</style>
+</head>
+<body>
+<header><h1>전국 화장실 지도</h1></header>
+<div id="chips">
+  <button class="chip on" data-f="all">전체</button>
+  <button class="chip" data-f="24">24시간</button>
+  <button class="chip" data-f="dis">장애인</button>
+  <button class="chip" data-f="diaper">기저귀교환대</button>
+  <button class="chip" data-f="kid">어린이용</button>
+</div>
+<div id="map"><button id="locbtn" aria-label="내 위치">◎</button></div>
+<div id="panel">
+  <h2 id="ptitle">가장 가까운 화장실</h2>
+  <div id="list"><div id="status">위치 확인 중…</div></div>
+</div>
+<div id="adslot">배너 광고 영역 — 앱인토스 인앱광고 SDK 연동 예정</div>
+<div id="overlay" onclick="closeSheet()"></div>
+<div id="sheet" role="dialog">
+  <button id="sx" onclick="closeSheet()" aria-label="닫기">×</button>
+  <div class="nm" id="s_nm"></div>
+  <div class="ad" id="s_ad"></div>
+  <div class="tags" id="s_tags" style="margin-top:8px"></div>
+  <table id="s_tbl"></table>
+  <div class="btns">
+    <a class="go" id="s_nav" href="#" target="_blank" rel="noopener">네이버지도 길안내</a>
+    <a class="go2" id="s_kakao" href="#" target="_blank" rel="noopener">카카오맵</a>
+  </div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var FLAG={IS24:1,DIS:2,DIAPER:4,KID:8,CCTV:16,BELL:32};
+var state={all:[],loaded:{},filter:'all',me:null,markers:null,idx:null};
+var map=L.map('map',{zoomControl:false}).setView([36.5,127.8],7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+ {maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+state.markers=L.layerGroup().addTo(map);
+document.getElementById('locbtn').onclick=locate;
+
+function dist(a,b,c,d){var R=6371e3,p=Math.PI/180;
+ var x=(c-a)*p,y=(d-b)*p,s=Math.sin(x/2),t=Math.sin(y/2);
+ var h=s*s+Math.cos(a*p)*Math.cos(c*p)*t*t;
+ return 2*R*Math.asin(Math.sqrt(h));}
+function fmtD(m){return m<1000?Math.round(m)+'m':(m/1000).toFixed(1)+'km';}
+function passF(t){var f=state.filter,g=t[3];
+ if(f==='all')return true;
+ if(f==='24')return g&FLAG.IS24;
+ if(f==='dis')return g&FLAG.DIS;
+ if(f==='diaper')return g&FLAG.DIAPER;
+ if(f==='kid')return g&FLAG.KID;
+ return true;}
+
+async function loadIndex(){
+ state.idx=await (await fetch('data/index.json')).json();}
+async function loadRegionsFor(lat,lng){
+ if(!state.idx)await loadIndex();
+ var jobs=[];
+ for(var rg in state.idx){
+  var b=state.idx[rg].bounds;
+  if(lat>b[0]-0.4&&lat<b[2]+0.4&&lng>b[1]-0.4&&lng<b[3]+0.4&&!state.loaded[rg]){
+   state.loaded[rg]=true;
+   jobs.push(fetch('data/'+rg+'.json').then(function(r){return r.json();})
+    .then(function(d){state.all=state.all.concat(d);}));
+  }}
+ await Promise.all(jobs);}
+
+function render(){
+ var el=document.getElementById('list');
+ if(!state.me){return;}
+ var me=state.me;
+ var items=state.all.filter(passF).map(function(t){
+   return {t:t,d:dist(me[0],me[1],t[1],t[2])};})
+  .sort(function(a,b){return a.d-b.d;}).slice(0,15);
+ state.markers.clearLayers();
+ el.innerHTML='';
+ if(!items.length){el.innerHTML='<div id="status">이 지역 데이터가 없습니다. 지도를 이동해 보세요.</div>';return;}
+ items.forEach(function(it,i){
+  var t=it.t,g=t[3];
+  var tags='';
+  tags+=(g&FLAG.IS24)?'<span class="tag g">24시간</span>':'';
+  tags+=(g&FLAG.DIS)?'<span class="tag b">장애인</span>':'';
+  tags+=(g&FLAG.DIAPER)?'<span class="tag">기저귀교환대</span>':'';
+  var c=document.createElement('div');c.className='card';
+  c.innerHTML='<div class="row"><span class="nm">'+esc(t[0])+'</span><span class="dist">'+fmtD(it.d)+'</span></div>'
+   +(tags?'<div class="tags">'+tags+'</div>':'');
+  c.onclick=function(){openSheet(t,it.d);};
+  el.appendChild(c);
+  var mk=L.circleMarker([t[1],t[2]],{radius:i<3?9:6,color:'#fff',weight:2,
+    fillColor:i<3?'#3182F6':'#8B95A1',fillOpacity:1}).addTo(state.markers);
+  mk.on('click',function(){openSheet(t,it.d);});
+ });}
+function esc(s){return String(s).replace(/[&<>"']/g,function(m){
+ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+
+function openSheet(t,d){
+ var g=t[3];
+ document.getElementById('s_nm').textContent=t[0];
+ document.getElementById('s_ad').textContent=t[5]+' · '+fmtD(d);
+ var tg='';
+ tg+=(g&FLAG.IS24)?'<span class="tag g">24시간</span>':'';
+ tg+=(g&FLAG.DIS)?'<span class="tag b">장애인 화장실</span>':'';
+ tg+=(g&FLAG.DIAPER)?'<span class="tag">기저귀교환대</span>':'';
+ tg+=(g&FLAG.KID)?'<span class="tag">어린이용</span>':'';
+ tg+=(g&FLAG.CCTV)?'<span class="tag">입구 CCTV</span>':'';
+ tg+=(g&FLAG.BELL)?'<span class="tag">비상벨</span>':'';
+ document.getElementById('s_tags').innerHTML=tg;
+ document.getElementById('s_tbl').innerHTML=
+  '<tr><td>개방시간</td><td>'+esc(t[4]||'정보 없음')+'</td></tr>'+
+  '<tr><td>주소</td><td>'+esc(t[5])+'</td></tr>';
+ var nm=encodeURIComponent(t[0]);
+ document.getElementById('s_nav').href=
+  'nmap://route/walk?dlat='+t[1]+'&dlng='+t[2]+'&dname='+nm;
+ document.getElementById('s_kakao').href=
+  'https://map.kakao.com/link/to/'+nm+','+t[1]+','+t[2];
+ document.getElementById('sheet').classList.add('open');
+ document.getElementById('overlay').classList.add('on');}
+function closeSheet(){
+ document.getElementById('sheet').classList.remove('open');
+ document.getElementById('overlay').classList.remove('on');}
+
+document.querySelectorAll('.chip').forEach(function(ch){
+ ch.onclick=function(){
+  document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});
+  ch.classList.add('on');state.filter=ch.dataset.f;render();};});
+
+function useFallback(){
+ var el=document.getElementById('status');
+ el.innerHTML='위치 권한이 꺼져 있습니다.<br>지도를 이동하면 해당 지역 화장실을 보여드립니다.<br><button onclick="locate()">다시 위치 허용</button>';}
+function locate(){
+ if(!navigator.geolocation){useFallback();return;}
+ navigator.geolocation.getCurrentPosition(async function(p){
+  state.me=[p.coords.latitude,p.coords.longitude];
+  map.setView(state.me,15);
+  L.circleMarker(state.me,{radius:7,color:'#fff',weight:3,fillColor:'#EF4444',fillOpacity:1})
+   .addTo(map).bindTooltip('내 위치');
+  await loadRegionsFor(state.me[0],state.me[1]);
+  render();
+ },useFallback,{enableHighAccuracy:true,timeout:8000});}
+
+map.on('moveend',async function(){
+ var c=map.getCenter();
+ await loadRegionsFor(c.lat,c.lng);
+ if(!state.me&&map.getZoom()>=12){state.me=[c.lat,c.lng];
+  document.getElementById('ptitle').textContent='지도 중심 기준 가까운 화장실';}
+ if(state.me&&map.getZoom()>=12){
+  if(document.getElementById('ptitle').textContent.indexOf('지도 중심')===0)
+   state.me=[c.lat,c.lng];
+  render();}});
+
+loadIndex();locate();
+</script>
+</body>
+</html>
