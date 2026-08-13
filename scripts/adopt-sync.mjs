@@ -2,6 +2,20 @@
 // 공고중(notice) + 보호중(protect)을 모두 수집한다 — 공고가 끝나도 보호소에서
 // 입양을 기다리는 아이들이 훨씬 많다.
 import { writeFileSync, mkdirSync } from 'fs';
+import { Agent, setGlobalDispatcher } from 'undici';
+
+// ★2026-08-13 — 재시도를 8회(3분 24초)까지 늘렸는데도 #34 가 전부 같은 곳에서 죽었다.
+//   ConnectTimeoutError (apis.data.go.kr:443, timeout: 10000ms) × 8
+//   기다림이 모자란 게 아니다. 매번 '연결' 단계에서 10초에 잘린다.
+//
+//   그 10초는 undici 의 connect 타임아웃 기본값이고, fetch 의 signal 로는 못 바꾼다.
+//   그래서 dispatcher 를 직접 만들어 60초로 준다.
+//
+//   ★이건 실험이기도 하다. 두 가지를 가른다.
+//     60초로 늘려서 되면 → 그냥 연결이 느렸던 것이다.
+//     60초에도 안 되면  → 러너 IP 에서 아예 막히는 것이다(공공데이터포털 해외 IP 제한).
+//                        그때는 코드로 풀 문제가 아니라 실행 위치를 옮겨야 한다.
+setGlobalDispatcher(new Agent({ connect: { timeout: 60000 }, headersTimeout: 60000, bodyTimeout: 60000 }));
 
 const KEY = process.env.ANIMAL_API_KEY;
 const BASE = 'https://apis.data.go.kr/1543061/abandonmentPublicService_v2';

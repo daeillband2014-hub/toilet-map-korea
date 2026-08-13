@@ -31,6 +31,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      # undici 를 직접 쓴다. Node 내장 fetch 는 connect 타임아웃(기본 10초)을
+      # 바꿀 방법을 안 열어준다. 그 10초가 #32·#34 를 죽인 지점이다.
+      - run: npm install undici@6 --no-save --no-audit --no-fund
+
       - run: node scripts/adopt-sync.mjs
         env:
           ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}
