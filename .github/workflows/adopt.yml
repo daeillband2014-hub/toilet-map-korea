@@ -34,9 +34,28 @@ jobs:
       - run: node scripts/adopt-sync.mjs
         env:
           ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}
+      # ★2026-08-13 — push 가 rejected 로 실패했다(#33).
+      #   원인: 워크플로우가 도는 중에 사람이 같은 브랜치에 푸시했다.
+      #   봇은 체크아웃 시점의 커밋을 들고 있어서 원격이 앞서가면 밀린다.
+      #   데이터는 멀쩡히 받아왔는데 마지막 한 줄에서 통째로 버려졌다.
+      #   → 밀리면 원격을 당겨와 얹고 다시 민다. 세 번까지 시도한다.
+      #     adopt/ 아래 파일만 건드리므로 rebase 로 꼬일 일이 없다.
       - run: |
           git config user.name "adopt-bot"
           git config user.email "bot@users.noreply.github.com"
           git add adopt/
-          git diff --cached --quiet || git commit -m "adopt data $(date +%F)"
-          git push
+          if git diff --cached --quiet; then
+            echo "바뀐 데이터 없음 — 커밋하지 않는다"
+            exit 0
+          fi
+          git commit -m "adopt data $(date +%F)"
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push; then
+              echo "푸시 완료 (시도 $i)"
+              exit 0
+            fi
+            echo "푸시 실패 — 원격이 앞서갔다. 5초 뒤 다시 시도 ($i/3)"
+            sleep 5
+          done
+          echo "세 번 다 실패했다"
+          exit 1
