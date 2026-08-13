@@ -1,7 +1,12 @@
 name: adopt-sync
 on:
   schedule:
-    - cron: '30 20 * * *'
+    # 한국시간 오전 10시(UTC 01:00).
+    # ★2026-08-13 변경 — 전에는 '30 20 * * *' 로 한국시간 05:30 이었다.
+    #   그 시각 예약분이 반복해서 ConnectTimeoutError 로 실패했는데,
+    #   같은 코드로 낮에 수동 실행한 #31 은 성공했다. 새벽 점검 시간대로 보인다.
+    #   실패해도 커밋을 안 하니 앱은 전날 데이터를 그대로 쓴다 — 데이터가 사라지진 않는다.
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -12,9 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # ★Node 20 은 GitHub Actions 에서 지원 종료 예고가 떴다(로그에 경고로 나온다).
+      #   런너가 이미 24 로 강제 실행하고 있어 맞춰 올린다.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - run: node scripts/adopt-sync.mjs
         env:
           ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}

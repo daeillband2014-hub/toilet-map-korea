@@ -7,15 +7,25 @@ const KEY = process.env.ANIMAL_API_KEY;
 const BASE = 'https://apis.data.go.kr/1543061/abandonmentPublicService_v2';
 
 // 공공데이터포털 서버가 종종 응답을 안 한다.
-// 2026-08-12 실패 로그: ConnectTimeoutError (apis.data.go.kr:443, timeout 10000ms).
-// 8/7 에도 같은 24초 실패가 있었다 — 30회 중 2회, 7% 다.
-// 한 번 끊겼다고 그날 데이터를 통째로 버리지 않도록 다시 시도한다.
-//  · 기본 타임아웃 10초는 짧다 → 30초로 늘린다
-//  · 5번까지 다시 부르고 간격을 늘린다(2s, 4s, 8s, 16s)
-//  · 그래도 안 되면 그때 던진다 — 조용히 빈 데이터를 쓰지 않는다
+//
+// [2026-08-12] 재시도를 넣고 AbortSignal.timeout(30000) 으로 타임아웃을 늘렸다.
+// [2026-08-13] ★그런데 또 실패했다. 로그를 보니 절반만 들었던 것이다.
+//   재시도 1/4 ~ 4/4 전부 실패, 매번 같은 메시지:
+//     ConnectTimeoutError (apis.data.go.kr:443, timeout: 10000ms)
+//   ★AbortSignal.timeout 은 '요청 전체' 시계이고, TCP 연결 단계는 undici 의
+//     connectTimeout(기본 10초)이 따로 잰다. 그래서 30초를 줘도 10초에 끊긴다.
+//     연결 자체가 안 되는 상황에선 내 설정이 닿지도 않는다.
+//
+//   그래서 이렇게 고쳤다.
+//    · 타임아웃을 늘리는 대신 **더 오래, 더 여러 번** 기다린다 (8회, 간격 상한 30초)
+//      총 대기 약 2분 20초. 서버가 잠깐 죽은 것이면 이 사이에 돌아온다.
+//    · 실행 시각도 함께 옮겼다(adopt.yml). 새벽 05:30 예약분은 자주 실패했는데
+//      낮에 수동 실행한 #31 은 성공했다. 새벽 점검 시간대로 보인다.
+//    · 그래도 안 되면 그때 던진다 — 조용히 빈 데이터를 쓰지 않는다.
+//      실패하면 커밋을 안 하므로 앱은 전날 데이터를 그대로 보여준다.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function getJson(url, tries = 5) {
+async function getJson(url, tries = 8) {
   let last;
   for (let i = 1; i <= tries; i++) {
     try {
@@ -31,7 +41,7 @@ async function getJson(url, tries = 5) {
       last = e;
       const netErr = /fetch failed|timeout|ETIMEDOUT|ECONNRESET|socket|abort/i.test(String(e));
       if (!netErr || i === tries) throw e;
-      const wait = 2000 * 2 ** (i - 1);
+      const wait = Math.min(2000 * 2 ** (i - 1), 30000);
       console.log(`  재시도 ${i}/${tries - 1} — ${Math.round(wait / 1000)}초 뒤 (${String(e).slice(0, 80)})`);
       await sleep(wait);
     }
