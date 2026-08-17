@@ -15,7 +15,7 @@ import { Agent, setGlobalDispatcher } from 'undici';
 //     60초로 늘려서 되면 → 그냥 연결이 느렸던 것이다.
 //     60초에도 안 되면  → 러너 IP 에서 아예 막히는 것이다(공공데이터포털 해외 IP 제한).
 //                        그때는 코드로 풀 문제가 아니라 실행 위치를 옮겨야 한다.
-setGlobalDispatcher(new Agent({ connect: { timeout: 60000 }, headersTimeout: 60000, bodyTimeout: 60000 }));
+setGlobalDispatcher(new Agent({ connect: { timeout: 60000 }, headersTimeout: 120000, bodyTimeout: 120000 }));
 
 const KEY = process.env.ANIMAL_API_KEY;
 const BASE = 'https://apis.data.go.kr/1543061/abandonmentPublicService_v2';
@@ -45,7 +45,14 @@ async function getJson(url, tries = 8) {
   let last;
   for (let i = 1; i <= tries; i++) {
     try {
-      const r = await fetch(url, { signal: AbortSignal.timeout(30000) });
+      /* ★2026-08-17 — 30초에서 90초로 늘린다.
+         8/15·8/16 이틀 잘 돌다가 오늘 #38 이 6분을 다 쓰고 죽었다. 오류가 지난번과 다르다.
+           지난번  ConnectTimeoutError (연결 자체가 안 됨) → connect 타임아웃 60초로 해결
+           이번    TimeoutError: The operation was aborted due to timeout
+                   = 연결은 됐는데 응답이 30초 안에 안 왔다. AbortSignal 이 먼저 끊은 것이다.
+         여덟 번을 시도했는데 전부 30초에서 잘렸다. 서버가 그 시간 내내 느렸다는 뜻이다.
+         이 값이 셋 중 가장 짧아 먼저 발동하므로, Agent 의 headers/body(120초)보다 낮게 둔다. */
+      const r = await fetch(url, { signal: AbortSignal.timeout(90000) });
       const t = await r.text();
       try {
         return JSON.parse(t);
