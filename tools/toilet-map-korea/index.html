@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>전국 화장실 지도</title>
+<style>
+:root{--blue:#3182F6;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;--line:#E8ECEF;--bg:#F9FAFB;
+--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);background:#fff;padding-top:calc(env(safe-area-inset-top,0px) + 76px);
+height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:center;justify-content:center;padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0}
+header h1{font-size:16px;font-weight:600}
+#chips{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+#chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;font-size:13px;padding:7px 13px;border-radius:17px;background:#F2F4F6;color:var(--sub);border:none;cursor:pointer}
+.chip.on{background:var(--blue);color:#fff}
+#map{flex:1;min-height:120px}
+#panel{flex-shrink:0;max-height:46dvh;overflow-y:auto;border-top:1px solid var(--line);padding:10px 14px calc(10px + var(--safe-b))}
+#panel h2{font-size:12px;color:var(--mut);font-weight:400;margin-bottom:8px}
+.notibtn{width:100%;padding:12px;margin:2px 0 10px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#8B95A1;font-size:13px;cursor:pointer}
+.morebtn{width:100%;padding:13px;margin:4px 0 10px;border:1px solid var(--line);border-radius:12px;background:#F2F4F6;color:#3182F6;font-size:14px;font-weight:700;cursor:pointer}
+.card{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+.card .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card .nm{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .dist{font-size:14px;font-weight:600;color:var(--blue);flex-shrink:0}
+.tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 7px;border-radius:4px;background:#F2F4F6;color:var(--sub)}
+.tag.g{background:#E7F4EC;color:#1B7E45}.tag.b{background:#EAF2FE;color:#1B64DA}
+#status{font-size:13px;color:var(--mut);text-align:center;padding:18px 10px}
+#status button{margin-top:10px;font-size:14px;padding:10px 18px;border:none;border-radius:10px;background:var(--blue);color:#fff}
+#sheet{position:fixed;left:0;right:0;bottom:-100%;background:#fff;border-radius:20px 20px 0 0;
+box-shadow:0 -4px 24px rgba(0,0,0,.15);transition:bottom .25s;z-index:1200;padding:18px 16px calc(16px + var(--safe-b));max-height:80dvh;overflow-y:auto}
+#sheet.open{bottom:0}
+#sheet .nm{font-size:17px;font-weight:600;padding-right:30px}
+#sheet .ad{font-size:12px;color:var(--mut);margin-top:4px}
+#sx{position:absolute;top:14px;right:14px;font-size:22px;color:var(--mut);background:none;border:none;cursor:pointer;line-height:1}
+#sheet table{width:100%;font-size:13px;margin:12px 0;border-collapse:collapse}
+#sheet td{padding:5px 0}#sheet td:first-child{color:var(--mut);width:104px}
+.btns{display:flex;gap:8px}
+.btns a{flex:1;text-align:center;padding:13px 0;border-radius:11px;font-size:14px;font-weight:600;text-decoration:none}
+.go{background:var(--blue);color:#fff}.go2{background:#F2F4F6;color:var(--sub)}
+#adslot{flex-shrink:0;width:100%;height:calc(96px + var(--safe-b));padding-bottom:var(--safe-b)}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s;z-index:1100}
+#overlay.on{opacity:1;pointer-events:auto}
+.leaflet-control-attribution{font-size:9px}
+#locbtn{position:absolute;right:10px;bottom:10px;z-index:1000;width:40px;height:40px;border-radius:50%;background:#fff;
+border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:18px;color:var(--blue);cursor:pointer}
+
+.adnote{font-size:13px;color:#8B95A1;text-align:center;margin:2px 0 10px;line-height:1.5}
+</style>
+  <script type="module" crossorigin src="./assets/index-ChWucOb5.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-vh-t_kPv.css">
+
+<meta name="description" content="전국 화장실 지도 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/toilet-map-korea/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="chips">
+  <button class="chip on" data-f="all">전체</button>
+  <button class="chip" data-f="24">24시간</button>
+  <button class="chip" data-f="dis">장애인</button>
+  <button class="chip" data-f="diaper">기저귀교환대</button>
+  <button class="chip" data-f="kid">어린이용</button>
+</div>
+<div id="map"><button id="locbtn" aria-label="내 위치">◎</button></div>
+<div id="panel">
+  <h2 id="ptitle">가장 가까운 화장실</h2>
+  <div id="list"><div id="status">위치 확인 중…</div></div>
+</div>
+<div id="adslot" style="display:none"></div>
+<div id="overlay"></div>
+<div id="sheet" role="dialog">
+  <button id="sx" aria-label="닫기">×</button>
+  <div class="nm" id="s_nm"></div>
+  <div class="ad" id="s_ad"></div>
+  <div class="tags" id="s_tags" style="margin-top:8px"></div>
+  <table id="s_tbl"></table>
+  <div class="btns">
+    <a class="go" id="s_nav" href="#" target="_blank" rel="noopener">네이버지도 길안내</a>
+    <a class="go2" id="s_kakao" href="#" target="_blank" rel="noopener">카카오맵</a>
+  </div>
+</div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

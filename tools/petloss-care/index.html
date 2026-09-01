@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>무지개다리 편지</title>
+<style>
+:root{--p:#8B7CD8;--pd:#6B5CB8;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;--bg:#F7F6FC;
+--lt:#E4E0F5;--line:#EBECEF;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+
+/* 토스 내비게이션 바는 우리 화면 '위에 떠 있다'. 자리를 비워주지 않으면
+   우리 내용이 그 띠 안으로 올라가 앱이 제목 줄을 따로 가진 것처럼 보인다.
+   2026-08-07 다른 앱들이 이 문제로 검수 반려됐다. */
+#view{flex:1;max-width:480px;width:100%;margin:0 auto;
+/* 아래 여백은 떠 있는 탭바에 가리지 않을 만큼 둔다(탭바 높이 + 띄운 만큼). */
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px 124px}
+
+h1{font-size:19px;letter-spacing:-.3px}
+h2{font-size:15px;margin-bottom:12px;letter-spacing:-.2px}
+.sub{font-size:13.5px;color:var(--sub);line-height:1.6}
+.card{background:#fff;border-radius:18px;padding:20px 18px;margin-bottom:14px;
+border:1px solid var(--line)}
+input[type=text],textarea{width:100%;padding:14px;border:1.5px solid var(--lt);border-radius:12px;
+font-size:15px;font-family:inherit;color:var(--ink);background:#fff}
+textarea{min-height:88px;resize:none;line-height:1.6}
+input::placeholder,textarea::placeholder{color:var(--mut)}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:12px}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:#fff;color:var(--pd);font-size:15px;font-weight:700;font-family:inherit;
+cursor:pointer;margin-top:10px}
+.back{border:none;background:none;color:var(--sub);font-size:14px;font-family:inherit;
+padding:0 0 14px;cursor:pointer}
+
+.petline{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.petball{width:44px;height:44px;border-radius:22px;background:var(--lt);display:flex;
+align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.dday{font-size:13px;color:var(--sub);margin-top:2px}
+
+.moods{display:flex;gap:6px;margin-bottom:12px}
+.mood{flex:1;text-align:center;padding:10px 2px;border:1.5px solid var(--lt);border-radius:12px;
+background:#fff;font-size:20px;cursor:pointer;line-height:1.2}
+.mood span{display:block;font-size:11px;color:var(--sub);margin-top:4px}
+.mood.on{border-color:var(--p);background:#F3F1FB}
+.mood.on span{color:var(--pd);font-weight:700}
+
+.log{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.logrow{display:flex;gap:10px;padding:8px 0;font-size:14px;color:var(--sub);line-height:1.5}
+.logd{color:var(--mut);font-size:12.5px;flex-shrink:0;width:52px;padding-top:2px}
+
+.mcard{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid var(--line)}
+.mt{font-size:15px;font-weight:700;margin-bottom:4px}
+.mx{font-size:13.5px;color:var(--sub);line-height:1.6;white-space:pre-wrap}
+.md{font-size:12px;color:var(--mut);margin-top:8px}
+
+.gcard{background:#fff;border-radius:16px;padding:18px 16px;margin-bottom:10px;
+border:1px solid var(--line);cursor:pointer}
+.gt{font-size:15.5px;font-weight:700;margin-bottom:4px}
+.gs{font-size:13px;color:var(--sub)}
+.gbody{font-size:15px;line-height:1.85;color:var(--ink);white-space:pre-wrap}
+.help{background:#fff;border:1px solid var(--lt);border-radius:16px;padding:18px 16px;
+font-size:13.5px;color:var(--sub);line-height:1.75;margin-top:14px}
+.help b{color:var(--ink)}
+
+.foot{font-size:12.5px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.6}
+.bannerbox{margin:18px 0 4px;min-height:0}
+.empty{text-align:center;color:var(--mut);font-size:14px;padding:40px 0;line-height:1.7}
+
+/* 탭바는 반드시 '플로팅' 형태여야 한다.
+   2026-08-11 검수 반려: "탭바를 사용하는 경우, 토스 미니앱 브랜딩 가이드에 적합한
+   플로팅 형태를 사용해야 해요." 화면 폭을 꽉 채운 고정 바(left/right:0, border-top)는
+   토스 앱 자체의 하단 탭과 형태가 겹쳐서 안 된다.
+   ★규격 수치는 공개돼 있지 않다. 가이드가 요구하는 건 '떠 있는 형태' 자체다 —
+     좌우 여백을 두고, 모서리를 둥글게 하고, 그림자로 본문 위에 띄운다.
+     탭 개수는 2~5개까지만 허용된다(우리는 3개). */
+#nav{position:fixed;left:16px;right:16px;bottom:calc(var(--safe-b) + 16px);
+display:flex;background:#fff;border:1px solid var(--line);border-radius:24px;
+box-shadow:0 6px 22px rgba(25,31,40,.14);max-width:400px;margin:0 auto;
+overflow:hidden;z-index:20}
+#nav button{flex:1;border:none;background:none;padding:9px 0 10px;font-size:11.5px;
+color:var(--mut);font-family:inherit;cursor:pointer}
+#nav button.on{color:var(--pd);font-weight:700}
+#nav .ico{display:block;font-size:19px;margin-bottom:3px}
+#adslot{width:100%;min-height:0;margin-top:14px}
+
+.adnote{font-size:13px;color:#8B95A1;text-align:center;margin:2px 0 10px;line-height:1.5}
+</style>
+  <script type="module" crossorigin src="./assets/index-B9Dqabh_.js"></script>
+
+<meta name="description" content="무지개다리 편지 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/petloss-care/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="view"></div>
+<div id="nav" style="display:none">
+  <button id="nb0" onclick="tab(0)"><span class="ico">🕯️</span>오늘</button>
+  <button id="nb1" onclick="tab(1)"><span class="ico">📖</span>기억</button>
+  <button id="nb2" onclick="tab(2)"><span class="ico">🌿</span>마음 돌보기</button>
+</div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

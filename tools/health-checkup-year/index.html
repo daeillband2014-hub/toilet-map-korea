@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>건강검진 대상자</title>
+<style>
+:root{--p:#1F9D74;--pd:#147052;--acc:#2E7FB8;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;
+--bg:#F2F7F5;--lt:#D8E7E1;--paper:#FFFFFF;--warn:#C0603A;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(var(--safe-b) + 28px)}
+h1{font-size:23px;line-height:1.35;margin-bottom:8px;text-align:center}
+.desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:16px;text-align:center}
+.emoji{font-size:50px;margin-bottom:6px;text-align:center;line-height:1}
+.step{font-size:12.5px;color:var(--p);font-weight:700;text-align:center;letter-spacing:.5px;margin-bottom:6px}
+
+/* 판정 결과 */
+.verdict{border-radius:20px;padding:26px 22px 22px;text-align:center;margin-bottom:14px;color:#fff}
+.verdict.yes{background:linear-gradient(158deg,#23A87C,#147052);box-shadow:0 6px 22px rgba(20,112,82,.26)}
+.verdict.no{background:linear-gradient(158deg,#6E7A87,#4A555F);box-shadow:0 6px 22px rgba(74,85,95,.24)}
+.verdict .ic{font-size:46px;line-height:1.1;margin-bottom:6px}
+.verdict .big{font-size:26px;font-weight:800;line-height:1.35;margin-bottom:6px}
+.verdict .sm{font-size:13.5px;opacity:.94;line-height:1.6}
+
+.yearbox{background:var(--paper);border-radius:16px;padding:16px 16px 12px;margin-bottom:12px;
+box-shadow:0 2px 10px rgba(31,157,116,.09)}
+.yearbox .lab{font-size:13px;color:var(--sub);margin-bottom:9px;font-weight:700}
+.years{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-height:250px;overflow-y:auto;padding:2px}
+button.yr{padding:11px 0;border:1.5px solid var(--lt);border-radius:11px;background:#fff;
+color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+button.yr:active{transform:scale(.96)}
+button.yr.on{background:var(--p);color:#fff;border-color:var(--p)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+button.pick{padding:16px 10px;border:1.5px solid var(--lt);border-radius:15px;background:var(--paper);
+color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;line-height:1.45;font-family:inherit}
+button.pick:active{transform:scale(.98)}
+button.pick .hint{display:block;font-size:11.5px;color:var(--mut);font-weight:500;margin-top:4px}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit}
+button.big:disabled{background:#C3D3CD;cursor:default}
+button.big:active:not(:disabled){transform:scale(.98)}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:var(--paper);color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit}
+
+/* 광고가 뜨기 전에 미리 알리는 문구. 이게 없어 반려된 적이 있다(오늘의 운세, 8/24). */
+.adnote{font-size:12px;color:var(--sub);text-align:center;margin:10px 0 2px;line-height:1.5}
+
+.sect{background:var(--paper);border-radius:15px;padding:16px 18px;margin-bottom:11px;
+box-shadow:0 2px 10px rgba(31,157,116,.08);font-size:13.5px;color:var(--sub);line-height:1.8;text-align:left}
+.sect b{color:var(--pd);display:block;margin-bottom:5px;font-size:14px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #EDF3F1;
+font-size:13.5px;align-items:flex-start}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--sub);flex-shrink:0}
+.row .v{font-weight:700;color:var(--ink);text-align:right;word-break:keep-all}
+.row .v.on{color:var(--p)}
+.row .v.off{color:var(--mut)}
+.caution{background:#FFF6F1;border:1px solid #F0D6C6;border-radius:14px;padding:14px 16px;
+font-size:12.5px;color:#8A4A2C;line-height:1.7;margin-bottom:12px}
+.caution b{display:block;margin-bottom:4px;font-size:13px}
+.bannerbox{margin:14px 0 4px;min-height:0}
+.foot{font-size:12px;color:var(--mut);text-align:center;line-height:1.6;margin-top:10px}
+</style>
+  <script type="module" crossorigin src="./assets/index-BlDOr70D.js"></script>
+
+<meta name="description" content="건강검진 대상자 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/health-checkup-year/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

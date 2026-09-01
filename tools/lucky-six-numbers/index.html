@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>로또 번호 추천</title>
+<style>
+:root{--p:#1F6349;--pd:#134534;--ink:#151B2E;--sub:#4A5470;--mut:#8A93AE;--bg:#F1F7F3;
+--lt:#D8EDE1;--tagbg:#E7F3EC;--tagtx:#1F6349;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(20px + var(--safe-b))}
+.center{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+h1{font-size:26px;line-height:1.35;margin-bottom:10px}
+.desc{font-size:15px;color:var(--sub);line-height:1.6;margin-bottom:26px}
+.emoji{font-size:70px;margin-bottom:16px}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+button.big:active{transform:scale(.98)}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:#fff;color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px}
+.zgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:8px}
+.z{background:#fff;border:1.5px solid var(--lt);border-radius:14px;padding:13px 6px;cursor:pointer;text-align:center}
+.z:active{background:var(--tagbg);border-color:var(--p)}
+.z .zi{font-size:26px}
+.z .zn{font-size:13px;font-weight:700;margin-top:3px}
+.z .zd{font-size:10.5px;color:var(--mut);margin-top:2px}
+.rcard{background:#fff;border-radius:20px;padding:26px 22px;text-align:center;
+box-shadow:0 4px 20px rgba(124,111,224,.15);margin-bottom:14px}
+.rname{font-size:23px;font-weight:800;margin:8px 0 2px}
+.rdate{font-size:12px;color:var(--mut);margin-bottom:14px}
+.score{font-size:44px;font-weight:800;color:var(--p);margin:4px 0}
+.slabel{font-size:12.5px;color:var(--mut)}
+.rdesc{font-size:14.5px;color:var(--sub);line-height:1.75;text-align:left;margin-top:14px}
+.rows{margin-top:14px}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:10px;text-align:left}
+.rk{font-size:13px;font-weight:700;width:58px;flex-shrink:0}
+.rbar{flex:1;height:8px;background:var(--lt);border-radius:4px;overflow:hidden}
+.rbar i{display:block;height:100%;background:var(--p);border-radius:4px}
+.rv{font-size:12px;color:var(--mut);width:34px;text-align:right}
+.lucky{display:flex;gap:10px;margin-bottom:14px}
+.lbox{flex:1;background:#fff;border-radius:14px;padding:13px 10px;text-align:center}
+.llabel{font-size:11.5px;color:var(--mut)}
+.lval{font-size:15px;font-weight:700;margin-top:4px}
+.tip{background:var(--tagbg);border-radius:12px;padding:14px;margin-top:12px;font-size:13.5px;
+line-height:1.65;color:var(--pd);text-align:left}
+.wcard{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;text-align:left;
+box-shadow:0 2px 10px rgba(124,111,224,.08)}
+.wcard.today{border:2px solid var(--p)}
+.wd{font-size:14px;font-weight:800}
+.wtoday{font-size:11px;color:#fff;background:var(--p);border-radius:8px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.wt{font-size:13px;color:var(--sub);line-height:1.6;margin-top:5px}
+.foot{font-size:11px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.5}
+.bannerbox{margin:16px 0 4px;min-height:0}
+.typedbox{background:#fff;border-radius:16px;padding:16px 16px 12px;margin:10px 0;
+box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.tlabel{font-size:13px;color:var(--sub);font-weight:600;margin-bottom:9px;text-align:left}
+.tnums{display:flex;gap:6px}
+.tnums input{flex:1;min-width:0;padding:11px 0;border:1.5px solid #E5E8EB;border-radius:10px;
+font-size:16px;text-align:center;background:#fff;color:var(--ink);font-family:inherit}
+
+.adnote{font-size:13px;color:var(--mut);text-align:center;margin:2px 0 12px;line-height:1.5}
+/* 번호 공. 실제 로또 색 규칙(1~10 노랑, 11~20 파랑, 21~30 빨강, 31~40 회색, 41~45 초록)을
+   그대로 쓴다 — 눈에 익어 읽기 편하다. 색은 main.js 의 ballColor 가 인라인으로 넣는다. */
+.balls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 4px}
+.ball{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;color:#fff;font-size:21px;font-weight:700;
+  box-shadow:0 4px 10px rgba(0,0,0,.16), inset -4px -5px 10px rgba(0,0,0,.14)}
+/* 생년월일 입력 */
+.form{background:#fff;border-radius:18px;padding:18px 18px 14px;margin:6px 0 12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.flabel{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
+.finput{width:100%;box-sizing:border-box;border:1.5px solid #E3E5EC;border-radius:12px;
+  padding:14px 14px;font-size:19px;letter-spacing:2px;text-align:center;
+  font-family:inherit;color:var(--ink);outline:none}
+.finput:focus{border-color:var(--p)}
+.fhint{min-height:17px;font-size:12.5px;color:#E05A5A;text-align:center;margin:8px 0 0}
+/* 5게임(A~E) 한 장. 로또 용지처럼 줄마다 이름표를 붙인다. */
+.game{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #EEF1F6}
+.game:last-of-type{border-bottom:0}
+.gname{flex:0 0 22px;font-size:14px;font-weight:700;color:var(--mut);text-align:center}
+.balls.small{margin:0;gap:7px;justify-content:flex-start;flex:1}
+.balls.small .ball{width:38px;height:38px;font-size:16px}
+/* 안 맞은 번호는 흐리게 — 맞은 것만 눈에 들어오게 한다 */
+.ball.off{opacity:.45;box-shadow:none}
+/* 대조 화면에서 줄마다 맞은 개수 */
+.ghit{flex:0 0 34px;text-align:right;font-size:13px;font-weight:700;color:var(--p)}
+.game .gname{flex:0 0 52px;text-align:left;font-size:12.5px}
+</style>
+  <script type="module" crossorigin src="./assets/index-BelcEb6O.js"></script>
+
+<meta name="description" content="로또 번호 추천 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/lucky-six-numbers/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

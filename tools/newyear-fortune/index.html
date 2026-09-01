@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2027 신년운세</title>
+<style>
+:root{--p:#7C2D92;--pd:#5B1F6E;--acc:#E9702E;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;
+--bg:#FAF5FF;--lt:#E9D5FF;--tagbg:#F3E8FF;--tagtx:#6B21A8;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(var(--safe-b) + 28px)}
+h1{font-size:24px;line-height:1.35;margin-bottom:8px;text-align:center}
+.desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:18px;text-align:center}
+.emoji{font-size:58px;margin-bottom:10px;text-align:center}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:4px}
+button.big:active{transform:scale(.98)}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:#fff;color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px}
+/* 광고가 뜨기 전에 미리 알리는 문구. 운세 앱이 이게 없어 반려됐다(2026-08-24). 처음부터 넣는다. */
+.adnote{font-size:12px;color:var(--sub);text-align:center;margin:2px 0 12px;line-height:1.5}
+.zgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:10px}
+.z{background:#fff;border-radius:15px;padding:14px 6px 12px;text-align:center;cursor:pointer;
+box-shadow:0 2px 10px rgba(124,45,146,.08)}
+.z:active{transform:scale(.96)}
+.zi{font-size:31px;line-height:1.2}
+.zn{font-size:14px;font-weight:700;margin-top:5px}
+.zd{font-size:10.5px;color:var(--mut);margin-top:2px}
+.rcard{background:#fff;border-radius:20px;padding:24px 22px;text-align:center;
+box-shadow:0 4px 20px rgba(124,45,146,.13);margin-bottom:13px}
+.rname{font-size:20px;font-weight:800;margin-top:4px}
+.ryear{font-size:12.5px;color:var(--mut);margin-top:3px}
+.rscore{font-size:44px;font-weight:800;color:var(--p);line-height:1.2;margin-top:9px}
+.rdesc{font-size:14.5px;color:var(--sub);line-height:1.75;margin-top:11px;text-align:left}
+.scard{background:#fff;border-radius:17px;padding:18px;margin-bottom:12px;
+box-shadow:0 2px 12px rgba(124,45,146,.08)}
+.srow{display:flex;align-items:center;gap:10px;margin:9px 0}
+.sl{font-size:13.5px;font-weight:700;width:56px;text-align:left;white-space:nowrap}
+.sbarw{flex:1;height:9px;background:var(--lt);border-radius:5px;overflow:hidden}
+.sbar{height:100%;background:linear-gradient(90deg,var(--p),var(--acc));border-radius:5px}
+.sv{font-size:13px;font-weight:700;color:var(--pd);width:34px;text-align:right}
+.stx{font-size:13.5px;color:var(--sub);line-height:1.7;margin-top:4px;text-align:left}
+.half{background:#fff;border-radius:15px;padding:15px 17px;margin-bottom:10px;text-align:left;
+box-shadow:0 2px 10px rgba(124,45,146,.07)}
+.ht{font-size:13px;font-weight:800;color:var(--pd);margin-bottom:5px}
+.hx{font-size:13.5px;color:var(--sub);line-height:1.7}
+.badge{display:inline-block;font-size:12px;background:var(--tagbg);color:var(--tagtx);
+padding:6px 12px;border-radius:9px;font-weight:700;margin-top:8px}
+.badge.warn{background:#FEF3C7;color:#92400E}
+.lucky{display:flex;gap:9px;margin-bottom:12px}
+.lk{flex:1;background:#fff;border-radius:14px;padding:13px 8px;text-align:center;
+box-shadow:0 2px 10px rgba(124,45,146,.07)}
+.lkl{font-size:11.5px;color:var(--mut)}
+.lkv{font-size:15px;font-weight:800;margin-top:4px}
+.note{background:#fff;border-radius:15px;padding:16px 17px;font-size:13px;
+color:var(--sub);line-height:1.75;margin-bottom:12px;text-align:left}
+.note b{color:var(--pd)}
+.chkr{text-align:center;font-size:18px;font-weight:800;margin-top:10px;line-height:1.55}
+.chkr.ok{color:var(--acc)} .chkr.no{color:var(--sub)}
+.bannerbox{margin:14px 0 4px;min-height:0}
+.foot{font-size:12px;color:var(--mut);text-align:center;line-height:1.6;margin-top:10px}
+</style>
+  <script type="module" crossorigin src="./assets/index-BcWp480b.js"></script>
+
+<meta name="description" content="2027 신년운세 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/newyear-fortune/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

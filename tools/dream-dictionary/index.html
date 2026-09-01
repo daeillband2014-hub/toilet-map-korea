@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>꿈해몽</title>
+<style>
+:root{--p:#4B4FA6;--pd:#2E3175;--ink:#1A1B2E;--sub:#4F5270;--mut:#8B8DA8;--bg:#F4F4FC;
+--lt:#E2DDFF;--tagbg:#EEEBFF;--tagtx:#4E3FA8;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(20px + var(--safe-b))}
+.center{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+h1{font-size:26px;line-height:1.35;margin-bottom:10px}
+.desc{font-size:15px;color:var(--sub);line-height:1.6;margin-bottom:26px}
+.emoji{font-size:70px;margin-bottom:16px}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+button.big:active{transform:scale(.98)}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:#fff;color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px}
+.zgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:8px}
+.z{background:#fff;border:1.5px solid var(--lt);border-radius:14px;padding:13px 6px;cursor:pointer;text-align:center}
+.z:active{background:var(--tagbg);border-color:var(--p)}
+.z .zi{font-size:26px}
+.z .zn{font-size:13px;font-weight:700;margin-top:3px}
+.z .zd{font-size:10.5px;color:var(--mut);margin-top:2px}
+.rcard{background:#fff;border-radius:20px;padding:26px 22px;text-align:center;
+box-shadow:0 4px 20px rgba(124,111,224,.15);margin-bottom:14px}
+.rname{font-size:23px;font-weight:800;margin:8px 0 2px}
+.rdate{font-size:12px;color:var(--mut);margin-bottom:14px}
+.score{font-size:44px;font-weight:800;color:var(--p);margin:4px 0}
+.slabel{font-size:12.5px;color:var(--mut)}
+.rdesc{font-size:14.5px;color:var(--sub);line-height:1.75;text-align:left;margin-top:14px}
+.rows{margin-top:14px}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:10px;text-align:left}
+.rk{font-size:13px;font-weight:700;width:58px;flex-shrink:0}
+.rbar{flex:1;height:8px;background:var(--lt);border-radius:4px;overflow:hidden}
+.rbar i{display:block;height:100%;background:var(--p);border-radius:4px}
+.rv{font-size:12px;color:var(--mut);width:34px;text-align:right}
+.lucky{display:flex;gap:10px;margin-bottom:14px}
+.lbox{flex:1;background:#fff;border-radius:14px;padding:13px 10px;text-align:center}
+.llabel{font-size:11.5px;color:var(--mut)}
+.lval{font-size:15px;font-weight:700;margin-top:4px}
+.tip{background:var(--tagbg);border-radius:12px;padding:14px;margin-top:12px;font-size:13.5px;
+line-height:1.65;color:var(--pd);text-align:left}
+.wcard{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;text-align:left;
+box-shadow:0 2px 10px rgba(124,111,224,.08)}
+.wcard.today{border:2px solid var(--p)}
+.wd{font-size:14px;font-weight:800}
+.wtoday{font-size:11px;color:#fff;background:var(--p);border-radius:8px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.wt{font-size:13px;color:var(--sub);line-height:1.6;margin-top:5px}
+.foot{font-size:11px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.5}
+
+.frm{background:#fff;border-radius:16px;padding:16px;margin:4px 0 6px;
+     box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.srow{display:flex;gap:8px}
+.srow input{flex:1;min-width:0;padding:13px 12px;font-size:16px;color:var(--ink);
+     border:1.5px solid #DDD8EA;border-radius:11px;background:#fff;font-family:inherit;
+     -webkit-appearance:none;appearance:none}
+.srow input:focus{outline:none;border-color:var(--p)}
+.sbtn{flex:0 0 auto;padding:0 18px;font-size:15px;font-weight:700;color:#fff;
+     background:var(--p);border:none;border-radius:11px;font-family:inherit;cursor:pointer}
+.sech{font-size:15px;color:var(--sub);margin:22px 0 9px;font-weight:600;text-align:left}
+
+.adnote{font-size:13px;color:var(--mut);text-align:center;margin:2px 0 12px;line-height:1.5}
+</style>
+  <script type="module" crossorigin src="./assets/index-mkIWsI76.js"></script>
+
+<meta name="description" content="꿈해몽 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/dream-dictionary/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

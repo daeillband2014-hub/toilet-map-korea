@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우리동네 유기견</title>
+<style>
+:root{--p:#2F9E6E;--pd:#1F7A52;--ink:#1E2A24;--sub:#55655D;--mut:#8CA096;--bg:#F4FAF7;
+--lt:#D8EFE4;--amber:#F5A623;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh}
+#wrap{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 76px) 16px calc(24px + var(--safe-b))}
+header{text-align:center;margin-bottom:14px}
+header h1{font-size:21px}
+header p{font-size:13px;color:var(--sub);margin-top:4px}
+.selrow{display:flex;gap:8px;margin-bottom:10px}
+select{flex:1;padding:12px;border:1.5px solid var(--lt);border-radius:12px;font-size:15px;
+background:#fff;color:var(--ink);font-family:inherit}
+.chips{display:flex;gap:6px;margin-bottom:14px}
+.chip{flex:1;text-align:center;font-size:13.5px;padding:9px 0;border-radius:12px;background:#fff;
+border:1.5px solid var(--lt);color:var(--sub);cursor:pointer}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
+#count{font-size:13px;color:var(--mut);margin-bottom:10px}
+#count b{color:var(--pd)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#notiBtn{width:100%;padding:12px;margin:0 0 12px;border:1px solid var(--lt);border-radius:12px;background:#fff;color:#8B95A1;font-size:13px;cursor:pointer;display:none}
+.card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--lt);cursor:pointer}
+.card img{width:100%;height:140px;object-fit:cover;display:block;background:#E4EFE9}
+.cbody{padding:10px 11px}
+.kind{font-size:14px;font-weight:700;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-size:12px;color:var(--sub);margin-top:3px}
+.due{font-size:11.5px;margin-top:6px;font-weight:700}
+.due.soon{color:#D9480F}
+.due.ok{color:var(--pd)}
+#status{text-align:center;padding:44px 16px;color:var(--mut);font-size:14px;line-height:1.7}
+#adslot{width:100%;height:calc(96px + var(--safe-b));padding-bottom:var(--safe-b);margin-top:16px}
+#overlay{position:fixed;inset:0;background:rgba(20,30,25,.5);opacity:0;pointer-events:none;transition:.2s;z-index:50}
+#overlay.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:-105%;max-width:480px;margin:0 auto;background:#fff;
+border-radius:22px 22px 0 0;z-index:60;transition:bottom .28s;max-height:88dvh;overflow-y:auto;
+padding-bottom:calc(16px + var(--safe-b))}
+#sheet.on{bottom:0}
+#sheet img{width:100%;height:260px;object-fit:cover;background:#E4EFE9}
+.sbody{padding:16px}
+.sbody h2{font-size:19px}
+.badges{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.bd{font-size:12px;padding:4px 10px;border-radius:8px;background:var(--bg);color:var(--pd);font-weight:600}
+.bd.warn{background:#FFF4E6;color:#D9480F}
+table{width:100%;font-size:13.5px;border-collapse:collapse;margin-top:6px}
+td{padding:6px 0;vertical-align:top;line-height:1.5}
+td:first-child{color:var(--mut);width:86px;flex-shrink:0}
+.callbtn{display:block;text-align:center;background:var(--p);color:#fff;font-size:16px;font-weight:800;
+padding:15px 0;border-radius:14px;text-decoration:none;margin-top:14px}
+.notice{font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:12px;text-align:center}
+#xbtn{position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;border:none;
+background:rgba(0,0,0,.45);color:#fff;font-size:18px;cursor:pointer;z-index:61}
+.foot{text-align:center;font-size:11px;color:var(--mut);margin-top:18px;line-height:1.6}
+.petloss{width:100%;padding:14px 0;border:1px solid #D8DCE2;border-radius:14px;background:#fff;color:#6B7684;font-size:14px;cursor:pointer;margin-top:10px;font-family:inherit}
+</style>
+  <script type="module" crossorigin src="./assets/index-O1lfffhl.js"></script>
+
+<meta name="description" content="우리동네 유기견 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/adopt-pets/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="wrap">
+  <header>
+    <p>가족을 기다리는 아이들이 여기 있어요</p>
+  </header>
+  <div class="selrow"><select id="sido"></select><select id="sigungu" style="display:none"></select></div>
+  <div class="chips">
+    <button class="chip on" data-k="all">전체</button>
+    <button class="chip" data-k="417000">강아지</button>
+    <button class="chip" data-k="422400">고양이</button>
+    <button class="chip" data-k="429900">기타</button>
+  </div>
+  <p id="count"></p>
+    <button id="notiBtn"></button>
+  <div class="grid" id="grid"></div>
+  <div id="status">지역을 선택하면<br>입양 대기 중인 아이들을 보여드려요</div>
+  <div id="adslot" style="display:none"></div>
+  <button class="petloss" onclick="location.href='intoss://petloss-care'">무지개다리를 건넌 아이가 있다면</button>
+  <p class="foot">자료: 국가동물보호정보시스템 (매일 갱신)<br>입양 문의는 각 보호소로 연락해 주세요</p>
+</div>
+<div id="overlay"></div>
+<div id="sheet">
+  <button id="xbtn">✕</button>
+  <img id="s_img" alt="">
+  <div class="sbody">
+    <h2 id="s_kind"></h2>
+    <div class="badges" id="s_badges"></div>
+    <table id="s_tbl"></table>
+    <a class="callbtn" id="s_call" href="#">📞 보호소에 입양 문의하기</a>
+    <p class="notice">공고 기한이 지나면 안락사될 수 있는 아이들이에요.<br>입양이 어렵다면 공유만으로도 큰 힘이 됩니다.</p>
+  </div>
+</div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

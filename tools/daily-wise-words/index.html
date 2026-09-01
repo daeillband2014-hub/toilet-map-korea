@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>오늘의 명언</title>
+<style>
+:root{--p:#8A6A2F;--pd:#5E4718;--gold:#BF963A;--ink:#1E1B16;--sub:#5A5348;--mut:#9A9186;
+--bg:#F7F4EE;--lt:#E4DCCB;--paper:#FFFDF8;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(var(--safe-b) + 28px)}
+h1{font-size:23px;line-height:1.35;margin-bottom:8px;text-align:center}
+.desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:16px;text-align:center}
+.date{font-size:12.5px;color:var(--mut);text-align:center;letter-spacing:1px;margin-bottom:12px}
+
+/* 명언 카드 */
+.quote{background:var(--paper);border-radius:20px;padding:30px 24px 24px;text-align:center;
+margin-bottom:13px;box-shadow:0 5px 20px rgba(138,106,47,.13);
+border-top:7px solid var(--p);border-bottom:7px solid var(--p);position:relative}
+.quote .mark{font-size:44px;color:var(--gold);line-height:.9;margin-bottom:6px;font-family:Georgia,serif}
+.quote .txt{font-size:19px;font-weight:700;line-height:1.72;color:var(--ink);word-break:keep-all;
+margin-bottom:13px}
+.quote .who{font-size:13.5px;color:var(--p);font-weight:700}
+.quote .src{font-size:12px;color:var(--mut);margin-top:3px}
+
+.sect{background:var(--paper);border-radius:15px;padding:16px 18px;margin-bottom:11px;
+box-shadow:0 2px 10px rgba(138,106,47,.09);font-size:13.5px;color:var(--sub);line-height:1.8;text-align:left}
+.sect b{color:var(--pd);display:block;margin-bottom:5px;font-size:14px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+button.pick{padding:16px 8px;border:1.5px solid var(--lt);border-radius:15px;background:var(--paper);
+color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;line-height:1.45;font-family:inherit}
+button.pick:active{transform:scale(.98)}
+button.pick .ic{display:block;font-size:23px;margin-bottom:4px}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit}
+button.big:active{transform:scale(.98)}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:var(--paper);color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit}
+button.cp{width:100%;padding:13px 0;border:1.5px solid var(--lt);border-radius:13px;background:#fff;
+color:var(--pd);font-size:14.5px;font-weight:700;cursor:pointer;margin-bottom:11px;font-family:inherit}
+button.cp.done{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* 광고가 뜨기 전에 미리 알리는 문구. 이게 없어 반려된 적이 있다(오늘의 운세, 8/24). */
+.adnote{font-size:12px;color:var(--sub);text-align:center;margin:10px 0 2px;line-height:1.5}
+.bannerbox{margin:14px 0 4px;min-height:0}
+.foot{font-size:12px;color:var(--mut);text-align:center;line-height:1.6;margin-top:10px}
+.toast{position:fixed;left:50%;bottom:calc(var(--safe-b) + 26px);transform:translateX(-50%);
+background:rgba(30,27,22,.93);color:#fff;font-size:13.5px;padding:11px 20px;border-radius:22px;
+opacity:0;transition:opacity .18s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+</style>
+  <script type="module" crossorigin src="./assets/index-CnB21EX4.js"></script>
+
+<meta name="description" content="오늘의 명언 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/daily-wise-words/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>소원을 말해봐</title>
+<style>
+:root{--ink:#E6F4F4;--sub:#7E9296;--mut:#4F6468;--line:#16282E;--gold:#C9A83C;
+--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+color:var(--ink);background:#050B0E;overflow-x:hidden}
+
+/* 토스 내비게이션 바는 화면 위에 떠 있다. 자리를 비우지 않으면 우리 내용이
+   그 띠 안으로 올라가 자체 헤더로 오해받아 반려된다. (2026-08-07) */
+#app{min-height:100%;max-width:480px;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 22px calc(28px + var(--safe-b));
+display:flex;flex-direction:column;align-items:center}
+
+#glow{position:fixed;left:50%;top:56%;transform:translate(-50%,-50%);
+width:840px;height:840px;border-radius:50%;pointer-events:none;z-index:0;
+background:radial-gradient(circle,
+  rgba(90,220,225,.15) 0%, rgba(50,170,190,.085) 30%,
+  rgba(25,90,110,.04) 52%, rgba(0,0,0,0) 72%);
+opacity:0;transition:opacity 2s ease-out}
+body.on #glow{opacity:1;animation:breathe 5s ease-in-out infinite 2s}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}
+                   50%{transform:translate(-50%,-50%) scale(1.07)}}
+.wrap{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center}
+
+/* ═══ 램프 ═══ */
+.lamp{position:relative;width:250px;height:120px;margin-top:150px;flex-shrink:0}
+.lbody{position:absolute;left:52px;bottom:6px;width:146px;height:74px;
+border-radius:50% 50% 46% 46% / 34% 34% 66% 66%;
+background:radial-gradient(ellipse at 34% 24%,rgba(255,245,205,.55) 0%,rgba(255,235,170,0) 34%),
+ linear-gradient(102deg,#3B2C0E 0%,#6B5218 13%,#A8842A 27%,#D9B647 39%,
+ #F3DC92 48%,#D2AE40 58%,#91701F 73%,#5A4413 87%,#2E2209 100%)}
+.lbody::after{content:'';position:absolute;left:12%;bottom:-7px;width:76%;height:13px;
+border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.6),rgba(0,0,0,0) 72%)}
+.lfoot{position:absolute;left:86px;bottom:0;width:78px;height:11px;border-radius:5px;
+background:linear-gradient(102deg,#2E2209,#8A6C22 42%,#C9A83C 52%,#6B5218 74%,#241B07)}
+.llid{position:absolute;left:106px;bottom:74px;width:38px;height:15px;
+border-radius:52% 52% 22% 22% / 78% 78% 22% 22%;
+background:linear-gradient(102deg,#4A380F,#B08C28 38%,#F0D77E 50%,#8A6C22 70%,#33270B)}
+.lknob{position:absolute;left:119px;bottom:87px;width:12px;height:12px;border-radius:50%;
+background:radial-gradient(circle at 34% 30%,#F7E7A8,#C9A83C 52%,#6B5218)}
+.lspout{position:absolute;left:186px;bottom:44px;width:64px;height:20px;
+border-radius:4px 14px 12px 4px;transform:rotate(-16deg);transform-origin:0 50%;
+background:linear-gradient(170deg,#2E2209,#8A6C22 34%,#E8CF72 52%,#9A7826 72%,#3B2C0E)}
+.lspout::after{content:'';position:absolute;right:-2px;top:2px;width:9px;height:16px;
+border-radius:50%;background:radial-gradient(ellipse,#1A1206,#0C0904)}
+.lhandle{position:absolute;left:16px;bottom:20px;width:46px;height:46px;
+border:9px solid;border-color:#8A6C22 transparent #5A4413 #C9A83C;
+border-radius:50%;transform:rotate(38deg)}
+
+/* 연기 */
+.smoke{position:absolute;left:236px;bottom:56px;width:16px;height:16px;border-radius:50%;
+opacity:0;pointer-events:none;filter:blur(5px);
+background:radial-gradient(circle,rgba(170,238,240,.5),rgba(90,200,215,0) 70%)}
+body.on .s1{animation:puff 2.6s ease-out .15s forwards}
+body.on .s2{animation:puff 2.6s ease-out .5s forwards}
+body.on .s3{animation:puff 2.6s ease-out .85s forwards}
+body.on .s4{animation:puff 2.6s ease-out 1.2s forwards}
+@keyframes puff{
+  0%{opacity:0;transform:translate(0,0) scale(.5)}
+  18%{opacity:.75}
+  50%{transform:translate(-46px,-110px) scale(2.2)}
+  100%{opacity:0;transform:translate(-96px,-215px) scale(3.6)}}
+
+/* ═══ 지니 ═══
+   흐림을 겹마다 다르게 준다. 머리로 갈수록 또렷하고 아래로 갈수록 연기가 된다.
+   전부 같게 흐리면 통째로 뭉개져 형태가 안 읽힌다. */
+.genie{position:absolute;left:50%;bottom:86px;width:210px;height:280px;opacity:0;
+transform:translateX(-50%) translateY(40px) scale(.55);transform-origin:50% 100%;
+transition:opacity 1.2s ease-out, transform 1.5s cubic-bezier(.2,.8,.3,1)}
+body.on .genie{opacity:1;transform:translateX(-50%) translateY(0) scale(1);transition-delay:1.4s}
+.g-tail{position:absolute;left:50%;bottom:-56px;transform:translateX(-50%);
+width:46px;height:170px;filter:blur(6px);border-radius:50% 50% 46% 46% / 22% 22% 78% 78%;
+background:linear-gradient(180deg,rgba(120,232,235,.62) 0%,rgba(70,196,210,.4) 42%,
+ rgba(40,140,165,.16) 76%,rgba(25,90,110,0) 100%);
+animation:tailsway 4.2s ease-in-out infinite}
+/* 흔들림은 이 통이 통째로 한다. 겹마다 따로 흔들면 형태가 흐트러진다.
+   그리고 여기 keyframe 에 translateX 를 넣으면 통째로 옆으로 밀린다. */
+.g-body{position:absolute;inset:0;transform-origin:50% 100%;
+animation:bodysway 4.2s ease-in-out infinite}
+.g-torso{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);
+width:118px;height:112px;filter:blur(2px);border-radius:44% 44% 30% 30% / 58% 58% 42% 42%;
+background:radial-gradient(ellipse at 50% 58%,rgba(214,252,252,.92) 0%,rgba(126,232,232,.82) 30%,
+ rgba(62,190,208,.6) 58%,rgba(34,130,158,.28) 82%,rgba(25,90,110,0) 100%)}
+.g-shoulder{position:absolute;left:50%;bottom:168px;transform:translateX(-50%);
+width:104px;height:34px;filter:blur(2px);border-radius:50% 50% 34% 34%;
+background:radial-gradient(ellipse at 50% 74%,rgba(224,254,254,.9) 0%,rgba(132,236,236,.74) 42%,rgba(60,186,206,0) 100%)}
+.g-head{position:absolute;left:50%;bottom:186px;transform:translateX(-50%);
+width:58px;height:66px;filter:blur(1px);border-radius:50% 50% 44% 44% / 54% 54% 46% 46%;
+background:radial-gradient(ellipse at 46% 40%,#F0FFFF 0%,rgba(186,250,250,.95) 26%,
+ rgba(104,222,228,.85) 56%,rgba(48,168,190,.45) 84%,rgba(30,110,132,0) 100%)}
+.g-arm{position:absolute;left:50%;bottom:126px;transform:translateX(-50%);
+width:150px;height:22px;filter:blur(3px);border-radius:50%;
+background:linear-gradient(90deg,rgba(60,186,206,0) 0%,rgba(126,232,232,.62) 22%,
+ rgba(196,250,250,.78) 50%,rgba(126,232,232,.62) 78%,rgba(60,186,206,0) 100%)}
+.g-eye{position:absolute;bottom:220px;width:5px;height:7px;border-radius:50%;
+background:#0B2A33;filter:blur(.3px);z-index:2}
+.g-eye.l{left:calc(50% - 13px)}
+.g-eye.r{left:calc(50% + 8px)}
+@keyframes bodysway{0%,100%{transform:translateY(0) rotate(-1.2deg)}
+                    50%{transform:translateY(-8px) rotate(1.2deg)}}
+@keyframes tailsway{0%,100%{transform:translateX(-50%) rotate(-2.5deg) scaleY(1)}
+                    50%{transform:translateX(-48%) rotate(2.5deg) scaleY(1.06)}}
+
+/* ═══ 글자 · 버튼 ═══ */
+h1{font-size:19px;letter-spacing:-.3px;align-self:flex-start}
+.t1{font-size:19px;font-weight:700;letter-spacing:-.4px;text-align:center;margin-top:32px}
+.t2{font-size:14px;color:var(--sub);margin-top:9px;line-height:1.65;text-align:center}
+.quote{font-size:17px;color:#DCEFE0;line-height:1.75;margin-top:16px;text-align:center;
+padding:0 8px;letter-spacing:-.2px}
+.cnt{font-size:12.5px;color:var(--mut);margin-top:18px;text-align:center;line-height:1.6}
+.big{width:100%;margin-top:24px;padding:16px 0;border:none;border-radius:14px;
+background:var(--gold);color:#241B00;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+.ghost{width:100%;margin-top:11px;padding:14px 0;border:1px solid #294248;border-radius:14px;
+background:transparent;color:#9FB4B8;font-size:15px;font-family:inherit;cursor:pointer}
+textarea{width:100%;margin-top:20px;background:#0A1418;border:1px solid #1E3339;
+border-radius:12px;padding:14px;font-size:15px;font-family:inherit;color:var(--ink);
+resize:none;min-height:58px;line-height:1.6}
+textarea::placeholder{color:#3E5459}
+.foot{font-size:12px;color:var(--mut);margin-top:16px;text-align:center;line-height:1.7}
+
+/* 소원 세 칸 */
+.slot{width:100%;background:#0A1418;border:1px solid var(--line);border-radius:14px;
+padding:15px 16px;margin-top:10px;cursor:pointer}
+.slot .no{font-size:11.5px;color:var(--gold);letter-spacing:.3px}
+.slot .wt{font-size:15.5px;color:#DCEFE0;line-height:1.55;margin-top:5px;word-break:break-all}
+.slot .st{font-size:12.5px;color:var(--mut);margin-top:7px;line-height:1.55}
+.slot.empty{border-style:dashed;text-align:center;color:#3E5459;font-size:14px;padding:19px;cursor:pointer}
+.done{width:100%;background:#0A1418;border:1px solid var(--line);border-radius:12px;
+padding:13px 15px;margin-top:9px}
+.done .dt{font-size:14.5px;color:#B9D6C4;line-height:1.55}
+.done .dd{font-size:11.5px;color:var(--mut);margin-top:5px}
+.pick{width:100%;margin-top:9px;padding:13px 0;border:1px solid #294248;border-radius:12px;
+background:#0A1418;color:#CFE4E6;font-size:14.5px;font-family:inherit;cursor:pointer}
+.empty{color:var(--mut);font-size:14px;text-align:center;padding:36px 0;line-height:1.8}
+#adslot{width:100%;min-height:0;margin-top:18px}
+</style>
+  <script type="module" crossorigin src="./assets/index-L4whw2ip.js"></script>
+
+<meta name="description" content="소원을 말해봐 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/wish-lamp-genie/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="glow"></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>이번주 로또당첨번호</title>
+<style>
+:root{--p:#1D4ED8;--pd:#1E40AF;--ink:#191F28;--sub:#4E5968;--mut:#8B95A1;--bg:#F1F5FD;
+--lt:#C7D9F7;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;color:var(--ink);
+background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;max-width:480px;width:100%;margin:0 auto;
+padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(var(--safe-b) + 28px)}
+h1{font-size:24px;line-height:1.35;margin-bottom:8px;text-align:center}
+.desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:22px;text-align:center}
+.emoji{font-size:58px;margin-bottom:10px;text-align:center}
+button.big{width:100%;padding:16px 0;border:none;border-radius:14px;background:var(--p);
+color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:4px}
+button.big:active{transform:scale(.98)}
+button.big:disabled{background:#B6C4DC;cursor:default}
+button.ghost{width:100%;padding:14px 0;border:1.5px solid var(--p);border-radius:14px;
+background:#fff;color:var(--pd);font-size:15px;font-weight:700;cursor:pointer;margin-top:10px}
+.rcard{background:#fff;border-radius:20px;padding:22px 20px;text-align:center;
+box-shadow:0 4px 20px rgba(29,78,216,.12);margin-bottom:12px}
+.rno{font-size:14px;color:var(--mut)}
+.rdate{font-size:12.5px;color:var(--mut);margin-top:2px}
+.balls{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:16px 0 4px}
+.b{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-size:17px;font-weight:800;color:#fff}
+.b.y{background:#F5A623}.b.b{background:#3B82F6}.b.r{background:#EF4444}
+.b.g{background:#6B7280}.b.n{background:#22C55E}
+.plus{display:flex;align-items:center;color:var(--mut);font-size:19px;font-weight:700;padding:0 2px}
+.bonus{font-size:12px;color:var(--mut);margin-top:8px}
+.pcard{background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:10px;
+box-shadow:0 2px 10px rgba(29,78,216,.07)}
+.pno{font-size:13.5px;color:var(--sub);font-weight:700;margin-bottom:9px}
+.pballs{display:flex;flex-wrap:wrap;gap:5px}
+.pb{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;
+justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.mycard{background:#fff;border-radius:18px;padding:19px 18px;margin-bottom:12px;
+box-shadow:0 3px 14px rgba(29,78,216,.09)}
+label{display:block;font-size:13px;color:var(--sub);font-weight:600;margin-bottom:8px}
+.nums{display:flex;gap:6px;margin-bottom:11px}
+.nums input{flex:1;min-width:0;padding:12px 0;border:1.5px solid var(--lt);border-radius:11px;
+font-size:16px;text-align:center;background:#fff;color:var(--ink);font-family:inherit}
+.hit{text-align:center;font-size:18px;font-weight:800;margin-top:12px;line-height:1.55}
+.hit b{color:var(--p);font-size:22px}
+.note{background:#fff;border-radius:15px;padding:16px 17px;font-size:13px;
+color:var(--sub);line-height:1.75;margin-bottom:12px;text-align:left}
+.note b{color:var(--pd)}
+.bannerbox{margin:14px 0 4px}
+.foot{font-size:12px;color:var(--mut);text-align:center;line-height:1.6;margin-top:10px}
+/* 광고가 뜨기 전에 미리 알리는 문구. 운세 앱이 이게 없어 반려됐다(2026-08-24). 처음부터 넣는다. */
+.adnote{font-size:12px;color:var(--sub);text-align:center;margin:8px 0 2px;line-height:1.5}
+</style>
+  <script type="module" crossorigin src="./assets/index-BA359zu3.js"></script>
+
+<meta name="description" content="이번주 로또당첨번호 - 설치 없이 바로 쓰는 무료 웹 도구">
+<link rel="canonical" href="https://daeillband2014-hub.github.io/toilet-map-korea/tools/lotto-weekly-result/">
+<style>
+.webhdr{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E8EB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webhdr a{color:#191F28;text-decoration:none;font-weight:800;font-size:15px}
+.webhdr a.all{font-weight:600;color:#4E5968;font-size:13px}
+.webftr{max-width:480px;margin:24px auto 0;padding:16px 20px 32px;font-size:12px;color:#8B95A1;line-height:1.7;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+.webftr a{color:#4E5968}
+#webad{max-width:480px;margin:8px auto 0;padding:0 20px;min-height:0}
+.adnote{display:none!important}
+</style>
+</head>
+<body>
+<div class="webhdr"><a href="../">생활 계산기 · 운세 모음</a><a class="all" href="../">전체 보기 →</a></div>
+<div id="app"></div>
+<div id="webad"></div><div class="webftr">입력값은 기기 안에서만 계산되며 서버로 전송되지 않습니다.<br><a href="../">다른 도구 보기</a> · <a href="../privacy.html">개인정보처리방침</a></div>
+</body>
+</html>
