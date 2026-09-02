@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://daeillband2014-hub.github.io/toilet-map-korea/tools/sitemap.xml
